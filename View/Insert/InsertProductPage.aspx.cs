@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using TokoBeDia.Model;
+using TokoBeDia.Repository;
+
+namespace TokoBeDia.View
+{
+    public partial class InsertProductPage : System.Web.UI.Page
+    {
+        TokoBeDiaEntities db = new TokoBeDiaEntities();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private int GenerateProductTypeid()
+        {
+            List<ProductType> pt = ProductTypesRepository.GetProductTypes();
+            List<int> id = new List<int>();
+            foreach (ProductType item in pt)
+            {
+                id.Add(item.ID);
+            }
+            Random rand = new Random();
+            int idx = rand.Next(0, id.Count);
+            return pt[idx].ID;
+        }
+
+        protected void SubmitButton_Click(object sender, EventArgs e)
+        {
+            int producttypeid = GenerateProductTypeid();
+            string name = Nametxt.Text;
+            if (name == "")
+            {
+                Labelerror.Text = "Name kosong";
+            }
+            else if (Stocktxt.Text == "")
+            {
+                Labelerror.Text = "Stock kosong";
+            }
+            else if (Pricetxt.Text == "")
+            {
+                Labelerror.Text = "Price kosong";
+            }
+            else
+            {
+                int stock = Int32.Parse(Stocktxt.Text.ToString());
+                int price = Int32.Parse(Pricetxt.Text.ToString());
+                if (price < 1000)
+                {
+                    Labelerror.Text = "Price dibawah minimum price";
+                }
+                else if ((price % 1000) != 0)
+                {
+                    Labelerror.Text = "Price tidak kelipatan 1000";
+                }
+                else
+                {
+                    ProductRepository.InsertProduct(producttypeid, name, stock, price);
+                    Response.Redirect("ViewProductPage.aspx");
+                }
+            }  
+        }
+
+        protected void CancelButton_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("ViewProductPage.aspx");
+        }
+    }
+}
