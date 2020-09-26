@@ -1,2 +1,2 @@
 # PSD
-Repository tentang matakuliah Pattern Software Design yang belajar tentang DDD
+Repository tentang Pattern Software Design yang belajar tentang DDD
